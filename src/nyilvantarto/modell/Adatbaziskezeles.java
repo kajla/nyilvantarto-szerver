@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import nyilvantarto.Felhasznalo;
 import nyilvantarto.Naplo;
-import nyilvantarto.Nyilvantarto;
+import nyilvantarto.Szallito;
 import nyilvantarto.aru;
 
 /**
@@ -68,7 +68,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         return sorokSzama > 0;
     }
 
-    public void aruOlvasas(Nyilvantarto nyilvantarto) {
+    public void aruOlvasas(Szallito szallito) {
         // Feltölti az árulistát az adatbázisból
         ArrayList<aru> lista = new ArrayList<>();
         try (Connection kapcsolat = DriverManager.getConnection(URL, USER, PASSWORD)) {
@@ -83,7 +83,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         }
         if (lista.isEmpty()) {
             System.out.println("A lista üres!");
-            nyilvantarto.setMaxID(0);
+            szallito.setMaxID(0);
         } else {
             int max = lista.get(0).getId();
             for (int i = 0; i < lista.size(); i++) {
@@ -92,9 +92,9 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
                 }
             }
             max++;
-            nyilvantarto.setMaxID(max);
+            szallito.setMaxID(max);
         }
-        nyilvantarto.setAruk(lista);
+        szallito.setAruk(lista);
     }
 
     public boolean aruHozzaad(aru ujAru) {
@@ -208,7 +208,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         return allapot;
     }
 
-    public boolean aruImport(Nyilvantarto nyilvantarto) {
+    public boolean aruImport(Szallito szallito) {
         // Importáltak, azaz dobjuk el jelenlegi táblát, hozzuk létre, majd töltsük fel
         // Ha sikerül, true a visszatérési érték
         boolean allapot = true;
@@ -218,7 +218,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         if (!arukLetrehozas()) {
             allapot = false;
         }
-        for (aru akt : nyilvantarto.getAruk()) {
+        for (aru akt : szallito.getAruk()) {
             if (!aruHozzaad(akt)) {
                 allapot = false;
             }
@@ -270,7 +270,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         return allapot;
     }
 
-    public ArrayList<Naplo> naploOlvasas(Nyilvantarto nyilvantarto) {
+    public ArrayList<Naplo> naploOlvasas() {
         // Feltölti az árulistát az adatbázisból
         ArrayList<Naplo> lista = new ArrayList<>();
         try (Connection kapcsolat = DriverManager.getConnection(URL, USER, PASSWORD)) {
@@ -319,7 +319,7 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
         return allapot;
     }
 
-    public void felhasznaloOlvasas(Nyilvantarto nyilvantarto) {
+    public void felhasznaloOlvasas(Szallito szallito) {
         // Feltölti a felhasználókat az adatbázisból
         ArrayList<Felhasznalo> lista = new ArrayList<>();
         try (Connection kapcsolat = DriverManager.getConnection(URL, USER, PASSWORD)) {
@@ -338,9 +338,9 @@ public class Adatbaziskezeles implements AdatbazisKapcsolat {
                 System.out.println("Admin felhasználó hozzáadva az adatbázishoz!");
             }
             lista.add(kezdetiFelh);
-            nyilvantarto.setaktFelhasznalo(kezdetiFelh);
+            szallito.setaktFelhasznalo(kezdetiFelh);
         }
-        nyilvantarto.setFelhasznalok(lista);
+        szallito.setFelhasznalok(lista);
     }
 
     public boolean felhasznaloHozzaad(Felhasznalo ujFelhasznalo) {

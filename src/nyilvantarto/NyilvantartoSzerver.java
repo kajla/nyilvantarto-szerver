@@ -22,14 +22,18 @@ import nyilvantarto.modell.Adatbaziskezeles;
  */
 public class NyilvantartoSzerver extends UnicastRemoteObject implements NyilvantartoService {
 
-    private Adatbaziskezeles adatbazis;
+    private static Adatbaziskezeles adatbazis;
+    private static Szallito sz;
 
     public NyilvantartoSzerver() throws RemoteException {
     }
 
     public static void main(String[] args) {
-        Adatbaziskezeles adatbazis = new Adatbaziskezeles();
+        adatbazis = new Adatbaziskezeles();
+        sz = new Szallito();
         adatbazis.adatbazisInicializalas();
+        adatbazis.aruOlvasas(sz);
+        adatbazis.felhasznaloOlvasas(sz);
         try {
             LocateRegistry.createRegistry(1099);
             Naming.bind("NYILVANTARTO", new NyilvantartoSzerver());
@@ -45,72 +49,87 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
     }
 
     @Override
-    public void aruOlvasas(Nyilvantarto n) throws RemoteException {
-        adatbazis.aruOlvasas(n);
+    public synchronized boolean aruHozzaad(aru aru) throws RemoteException {
+        return adatbazis.aruHozzaad(aru);
     }
 
     @Override
-    public boolean aruHozzaad(aru aru) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized int aruEllenoriz(aru aru) throws RemoteException {
+        return adatbazis.aruEllenoriz(aru);
     }
 
     @Override
-    public int aruEllenoriz(aru aru) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized boolean aruTorol(aru aru) throws RemoteException {
+        return adatbazis.aruTorol(aru);
     }
 
     @Override
-    public boolean aruTorol(aru aru) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized boolean aruModosit(aru aru) throws RemoteException {
+        return adatbazis.aruModosit(aru);
+    }
+
+
+    @Override
+    public synchronized boolean naploHozzaad(Naplo naplo) throws RemoteException {
+        return adatbazis.naploHozzaad(naplo);
     }
 
     @Override
-    public boolean aruModosit(aru aru) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized void naploTisztitas() throws RemoteException {
+        adatbazis.naploTisztitas();
+    }
+
+
+    @Override
+    public synchronized boolean felhasznaloHozzaad(Felhasznalo f) throws RemoteException {
+        return adatbazis.felhasznaloHozzaad(f);
     }
 
     @Override
-    public boolean aruImport(Nyilvantarto n) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized boolean felhasznaloTorol(Felhasznalo f) throws RemoteException {
+        return adatbazis.felhasznaloTorol(f);
     }
 
     @Override
-    public boolean naploHozzaad(Naplo naplo) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized boolean felhasznaloModosit(Felhasznalo f) throws RemoteException {
+        return adatbazis.felhasznaloModosit(f);
     }
 
     @Override
-    public ArrayList<Naplo> naploOlvasas(Nyilvantarto n) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized int felhasznaloEllenoriz(Felhasznalo f) throws RemoteException {
+        return adatbazis.felhasznaloEllenoriz(f);
     }
 
     @Override
-    public void naploTisztitas() throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized ArrayList<aru> aruLista() throws RemoteException {
+        return sz.getAruk();
     }
 
     @Override
-    public void felhasznaloOlvasas(Nyilvantarto n) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized int aruMaxID() throws RemoteException {
+        return sz.getMaxID();
     }
 
     @Override
-    public boolean felhasznaloHozzaad(Felhasznalo f) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized boolean aruImport(ArrayList<aru> al) throws RemoteException {
+        sz.setAruk(al);
+        return adatbazis.aruImport(sz);
     }
 
     @Override
-    public boolean felhasznaloTorol(Felhasznalo f) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized ArrayList<Naplo> naploOlvasas() throws RemoteException {
+        return adatbazis.naploOlvasas();
     }
 
     @Override
-    public boolean felhasznaloModosit(Felhasznalo f) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized ArrayList<Felhasznalo> felhasznaloLista() throws RemoteException {
+        return sz.getFelhasznalok();
     }
 
     @Override
-    public int felhasznaloEllenoriz(Felhasznalo f) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized Felhasznalo aktFelhasznalo() throws RemoteException {
+        return sz.getAktFelhasznalo();
     }
+
+
 }
