@@ -68,7 +68,6 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
         return adatbazis.aruModosit(aru);
     }
 
-
     @Override
     public synchronized boolean naploHozzaad(Naplo naplo) throws RemoteException {
         return adatbazis.naploHozzaad(naplo);
@@ -78,7 +77,6 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
     public synchronized void naploTisztitas() throws RemoteException {
         adatbazis.naploTisztitas();
     }
-
 
     @Override
     public synchronized boolean felhasznaloHozzaad(Felhasznalo f) throws RemoteException {
@@ -102,6 +100,7 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
 
     @Override
     public synchronized ArrayList<aru> aruLista() throws RemoteException {
+        adatbazis.aruOlvasas(sz);
         return sz.getAruk();
     }
 
@@ -113,7 +112,9 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
     @Override
     public synchronized boolean aruImport(ArrayList<aru> al) throws RemoteException {
         sz.setAruk(al);
-        return adatbazis.aruImport(sz);
+        boolean allapot = adatbazis.aruImport(sz);
+        adatbazis.aruOlvasas(sz);
+        return allapot;
     }
 
     @Override
@@ -123,6 +124,7 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
 
     @Override
     public synchronized ArrayList<Felhasznalo> felhasznaloLista() throws RemoteException {
+        adatbazis.felhasznaloOlvasas(sz);
         return sz.getFelhasznalok();
     }
 
@@ -130,6 +132,5 @@ public class NyilvantartoSzerver extends UnicastRemoteObject implements Nyilvant
     public synchronized Felhasznalo aktFelhasznalo() throws RemoteException {
         return sz.getAktFelhasznalo();
     }
-
 
 }
